@@ -55,6 +55,7 @@ public class MainController {
 	@GetMapping(value = {"/productImage"})
 	public void productImage(HttpServletRequest request, HttpServletResponse response, Model model,
 			@RequestParam("code") String code) throws IOException {
+		System.out.println("Dat fix.....");
 		Product product = null;
 		if (code != null) {
 			product = productDAO.getProductByCode(code);
