@@ -190,6 +190,7 @@ public class MainController {
 	// POST: Gửi đơn hàng (Save).
 	@PostMapping(value = {"/shoppingCartConfirmation"})
 	public String shoppingCartConfirmationSave(HttpServletRequest request, Model model) {
+		System.out.println("Tuyen fix.");
 		CartInfo cartInfo = Utils.getCartInfoInSession(request);
 
 		// Chưa mua mặt hàng nào.
