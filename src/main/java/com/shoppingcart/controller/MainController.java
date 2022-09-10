@@ -220,7 +220,7 @@ public class MainController {
 	@GetMapping(value = { "/shoppingCartFinalize" })
 	public String shoppingCartFinalize(HttpServletRequest request, Model model) {
 		CartInfo lastOrderedCart = Utils.getLastOrderedCartInfoInSession(request);
-		System.out.println("Son Fix");
+
 		if (lastOrderedCart == null) {
 			return "redirect:/shoppingCart";
 		}
