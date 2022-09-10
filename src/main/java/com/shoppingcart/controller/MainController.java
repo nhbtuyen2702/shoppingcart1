@@ -56,6 +56,7 @@ public class MainController {
 	@GetMapping(value = {"/productImage"})
 	public void productImage(HttpServletRequest request, HttpServletResponse response, Model model,
 			@RequestParam("code") String code) throws IOException {
+		System.out.println("Dat fix.....");
 		Product product = null;
 		if (code != null) {
 			product = productDAO.getProductByCode(code);
@@ -92,6 +93,7 @@ public class MainController {
 	// GET: Hiển thị giỏ hàng.
 	@GetMapping(value = {"/shoppingCart"})
 	public String shoppingCartHandler(HttpServletRequest request, Model model) {
+		System.out.println("Nguyen fixed");
 		CartInfo cartInfo = Utils.getCartInfoInSession(request);
 
 		model.addAttribute("cartForm", cartInfo);
@@ -102,6 +104,7 @@ public class MainController {
 	@PostMapping(value = {"/shoppingCart"})
 	public String shoppingCartUpdateQuantity(HttpServletRequest request, Model model,
 			@ModelAttribute("cartForm") CartInfo cartForm) {
+		System.out.println("Tuyen fix.");		
 		CartInfo cartInfo = Utils.getCartInfoInSession(request);
 		cartInfo.updateQuantity(cartForm);
 
@@ -217,7 +220,7 @@ public class MainController {
 	@GetMapping(value = { "/shoppingCartFinalize" })
 	public String shoppingCartFinalize(HttpServletRequest request, Model model) {
 		CartInfo lastOrderedCart = Utils.getLastOrderedCartInfoInSession(request);
-
+		System.out.println("Son Fix");
 		if (lastOrderedCart == null) {
 			return "redirect:/shoppingCart";
 		}
