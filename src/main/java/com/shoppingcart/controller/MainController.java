@@ -42,6 +42,7 @@ public class MainController {
 	@GetMapping(value = {"/productList"})
 	public String getAllProductInfos(Model model, @RequestParam(value = "name", defaultValue = "") String likeName,
 			@RequestParam(value = "page", defaultValue = "1") int page) {
+				
 		final int maxResult = 5;//khai báo số dòng dữ liệu tối đa cho 1 page
 		PaginationResult<ProductInfo> productInfos = productDAO.getAllProductInfos(page, maxResult, likeName);
 
@@ -101,6 +102,7 @@ public class MainController {
 	@PostMapping(value = {"/shoppingCart"})
 	public String shoppingCartUpdateQuantity(HttpServletRequest request, Model model,
 			@ModelAttribute("cartForm") CartInfo cartForm) {
+		System.out.println("Tuyen fix.");		
 		CartInfo cartInfo = Utils.getCartInfoInSession(request);
 		cartInfo.updateQuantity(cartForm);
 
