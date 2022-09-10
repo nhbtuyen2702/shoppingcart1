@@ -93,7 +93,7 @@ public class MainController {
 	// GET: Hiển thị giỏ hàng.
 	@GetMapping(value = {"/shoppingCart"})
 	public String shoppingCartHandler(HttpServletRequest request, Model model) {
-		System.out.println("Nguyen fixed");
+		System.out.println("Nguyen123 fixed");
 		CartInfo cartInfo = Utils.getCartInfoInSession(request);
 
 		model.addAttribute("cartForm", cartInfo);
