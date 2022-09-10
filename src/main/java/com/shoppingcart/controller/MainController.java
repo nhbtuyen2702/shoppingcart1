@@ -42,6 +42,7 @@ public class MainController {
 	@GetMapping(value = {"/productList"})
 	public String getAllProductInfos(Model model, @RequestParam(value = "name", defaultValue = "") String likeName,
 			@RequestParam(value = "page", defaultValue = "1") int page) {
+		System.out.println("Yen FIX");
 		final int maxResult = 5;//khai báo số dòng dữ liệu tối đa cho 1 page
 		PaginationResult<ProductInfo> productInfos = productDAO.getAllProductInfos(page, maxResult, likeName);
 
