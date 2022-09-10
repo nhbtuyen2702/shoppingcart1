@@ -37,39 +37,39 @@ public class MainController {
 	@Autowired
 	private CustomerInfoValidator customerInfoValidator;
 	
-	//thuá»™c tÃ­nh defaultValue dÃ¹ng Ä‘á»ƒ gÃ¡n giÃ¡ trá»‹ náº¿u ko truyá»�n trÃªn url. VÃ­ dá»¥: /productList -->page = 1
-	//Náº¿u cÃ³ truyá»�n trÃªn url. VÃ­ dá»¥: /productList?page=2 -->page = 2
+	//thuộc tính defaultValue dùng để gán giá trị nếu ko truyền trên url. Ví dụ: /productList -->page = 1
+	//Nếu có truyền trên url. Ví dụ: /productList?page=2 -->page = 2
 	@GetMapping(value = {"/productList"})
 	public String getAllProductInfos(Model model, @RequestParam(value = "name", defaultValue = "") String likeName,
 			@RequestParam(value = "page", defaultValue = "1") int page) {
-		final int maxResult = 5;//khai bÃ¡o sá»‘ dÃ²ng dá»¯ liá»‡u tá»‘i Ä‘a cho 1 page
+		final int maxResult = 5;//khai báo số dòng dữ liệu tối đa cho 1 page
 		PaginationResult<ProductInfo> productInfos = productDAO.getAllProductInfos(page, maxResult, likeName);
 
 		model.addAttribute("paginationProductInfos", productInfos);
 		return "productList";
 	}
 	
-	//HttpServletRequest vÃ  HttpServletResponse lÃ  2 Ä‘á»‘i tÆ°á»£ng cÃ³ sáºµn cá»§a Servlet, cÃ³ thá»ƒ sá»­ dá»¥ng hoáº·c ko sá»­ dá»¥ng
-	//HttpServletRequest cÃ³ thá»ƒ láº¥y cÃ¡c thÃ´ng tin cá»§a request gá»­i tá»›i Controller
-	//HttpServletResponse cÃ³ thá»ƒ tráº£ vá»� thÃ´ng tin tá»« Controller cho request gá»­i tá»›i
+	//HttpServletRequest và HttpServletResponse là 2 đối tượng có sẵn của Servlet, có thể sử dụng hoặc ko sử dụng
+	//HttpServletRequest có thể lấy các thông tin của request gửi tới Controller
+	//HttpServletResponse có thể trả về thông tin từ Controller cho request gửi tới
 	@GetMapping(value = {"/productImage"})
 	public void productImage(HttpServletRequest request, HttpServletResponse response, Model model,
 			@RequestParam("code") String code) throws IOException {
-		System.out.println("Dat fix.");
+		System.out.println("Dat fix");
 		Product product = null;
 		if (code != null) {
 			product = productDAO.getProductByCode(code);
 		}
 
 		if (product != null && product.getImage() != null) {
-			response.setContentType("image/jpeg, image/jpg, image/png, image/gif");//thay Ä‘á»•i Ä‘á»‹nh dáº¡ng sáº½ tráº£ vá»�
-			response.getOutputStream().write(product.getImage());//ná»™i dung sáº½ tráº£ vá»�
+			response.setContentType("image/jpeg, image/jpg, image/png, image/gif");//thay đổi định dạng sẽ trả về
+			response.getOutputStream().write(product.getImage());//nội dung sẽ trả về
 		}
 		response.getOutputStream().close();
 	}
 	
-	//dÃ¹ng HttpServletRequest Ä‘á»ƒ láº¥y thÃ´ng tin trong session
-	//khi má»™t cartInfo Ä‘Æ°á»£c láº¥y trong session ra, nÃ³ sáº½ luÃ´n Ä‘Æ°á»£c Ä‘á»“ng bá»™ tráº¡ng thÃ¡i vá»›i session, cÃ³ nghÄ©a lÃ  khi thay Ä‘á»•i thÃ´ng tin cartInfo nÃ y thÃ¬ cartInfo tÆ°Æ¡ng á»©ng trong session cÅ©ng sáº½ bá»‹ thay Ä‘á»•i theo
+	//dùng HttpServletRequest để lấy thông tin trong session
+	//khi một cartInfo được lấy trong session ra, nó sẽ luôn được đồng bộ trạng thái với session, có nghĩa là khi thay đổi thông tin cartInfo này thì cartInfo tương ứng trong session cũng sẽ bị thay đổi theo
 	@GetMapping(value = {"/buyProduct"})
 	public String buyProductHandler(HttpServletRequest request, Model model,
 			@RequestParam(value = "code", defaultValue = "") String code) {
@@ -79,17 +79,17 @@ public class MainController {
 			product = productDAO.getProductByCode(code);
 		}
 		if (product != null) {
-			// ThÃ´ng tin giá»� hÃ ng cÃ³ thá»ƒ Ä‘Ã£ lÆ°u vÃ o trong Session trÆ°á»›c Ä‘Ã³.
+			// Thông tin giỏ hàng có thể đã lưu vào trong Session trước đó.
 			CartInfo cartInfo = Utils.getCartInfoInSession(request);
-			ProductInfo productInfo = new ProductInfo(product);//láº¥y code,name,price tá»« product truyá»�n qua ProductInfo
+			ProductInfo productInfo = new ProductInfo(product);//lấy code,name,price từ product truyền qua ProductInfo
 			cartInfo.addProduct(productInfo, 1);
 		}
 
-		// Chuyá»ƒn sang trang danh sÃ¡ch cÃ¡c sáº£n pháº©m Ä‘Ã£ mua.
+		// Chuyển sang trang danh sách các sản phẩm đã mua.
 		return "redirect:/shoppingCart";
 	}
 
-	// GET: Hiá»ƒn thá»‹ giá»� hÃ ng.
+	// GET: Hiển thị giỏ hàng.
 	@GetMapping(value = {"/shoppingCart"})
 	public String shoppingCartHandler(HttpServletRequest request, Model model) {
 		CartInfo cartInfo = Utils.getCartInfoInSession(request);
@@ -98,14 +98,14 @@ public class MainController {
 		return "shoppingCart";
 	}
 	
-	// POST: Cáº­p nháº­p sá»‘ lÆ°á»£ng cho cÃ¡c sáº£n pháº©m Ä‘Ã£ mua.
+	// POST: Cập nhập số lượng cho các sản phẩm đã mua.
 	@PostMapping(value = {"/shoppingCart"})
 	public String shoppingCartUpdateQuantity(HttpServletRequest request, Model model,
 			@ModelAttribute("cartForm") CartInfo cartForm) {
 		CartInfo cartInfo = Utils.getCartInfoInSession(request);
 		cartInfo.updateQuantity(cartForm);
 
-		// Chuyá»ƒn sang trang danh sÃ¡ch cÃ¡c sáº£n pháº©m Ä‘Ã£ mua.
+		// Chuyển sang trang danh sách các sản phẩm đã mua.
 		return "redirect:/shoppingCart";
 	}
 	
@@ -119,24 +119,24 @@ public class MainController {
 		}
 
 		if (product != null) {
-			// ThÃ´ng tin giá»� hÃ ng cÃ³ thá»ƒ Ä‘Ã£ lÆ°u vÃ o trong Session trÆ°á»›c Ä‘Ã³.
+			// Thông tin giỏ hàng có thể đã lưu vào trong Session trước đó.
 			CartInfo cartInfo = Utils.getCartInfoInSession(request);
 			ProductInfo productInfo = new ProductInfo(product);
 			cartInfo.removeProduct(productInfo);
 		}
 
-		// Chuyá»ƒn sang trang danh sÃ¡ch cÃ¡c sáº£n pháº©m Ä‘Ã£ mua.
+		// Chuyển sang trang danh sách các sản phẩm đã mua.
 		return "redirect:/shoppingCart";
 	}
 
-	// GET: Nháº­p thÃ´ng tin khÃ¡ch hÃ ng.
+	// GET: Nhập thông tin khách hàng.
 	@GetMapping(value = { "/shoppingCartCustomer" })
 	public String shoppingCartCustomerForm(HttpServletRequest request, Model model) {
 		CartInfo cartInfo = Utils.getCartInfoInSession(request);
 
-		// ChÆ°a mua máº·t hÃ ng nÃ o.
+		// Chưa mua mặt hàng nào.
 		if (cartInfo.isEmpty()) {
-			// Chuyá»ƒn tá»›i trang danh giá»� hÃ ng
+			// Chuyển tới trang danh giỏ hàng
 			return "redirect:/shoppingCart";
 		}
 
@@ -149,12 +149,12 @@ public class MainController {
 		return "shoppingCartCustomer";
 	}
 	
-	// POST: Save thÃ´ng tin khÃ¡ch hÃ ng.
+	// POST: Save thông tin khách hàng.
 	@PostMapping(value = { "/shoppingCartCustomer" })
 	public String shoppingCartCustomerSave(HttpServletRequest request, Model model,
 			@ModelAttribute("customerForm") @Valid CustomerInfo customerForm, BindingResult result) {
 		customerInfoValidator.validate(customerForm, result);
-		// Káº¿t quáº£ Validate CustomerInfo.
+		// Kết quả Validate CustomerInfo.
 		if (result.hasErrors()) {
 			customerForm.setValid(false);
 			return "shoppingCartCustomer";
@@ -163,38 +163,38 @@ public class MainController {
 		customerForm.setValid(true);
 		CartInfo cartInfo = Utils.getCartInfoInSession(request);
 		cartInfo.setCustomerInfo(customerForm);
-		// Chuyá»ƒn hÆ°á»›ng sang trang xÃ¡c nháº­n.
+		// Chuyển hướng sang trang xác nhận.
 		return "redirect:/shoppingCartConfirmation";
 	}
 
-	// GET: Xem láº¡i thÃ´ng tin Ä‘á»ƒ xÃ¡c nháº­n.
+	// GET: Xem lại thông tin để xác nhận.
 	@GetMapping(value = {"/shoppingCartConfirmation"})
 	public String shoppingCartConfirmationReview(HttpServletRequest request, Model model) {
 		CartInfo cartInfo = Utils.getCartInfoInSession(request);
 
-		// ChÆ°a mua máº·t hÃ ng nÃ o.
+		// Chưa mua mặt hàng nào.
 		if (cartInfo.isEmpty()) {
-			// Chuyá»ƒn tá»›i trang danh giá»� hÃ ng
+			// Chuyển tới trang danh giỏ hàng
 			return "redirect:/shoppingCart";
 		} else if (!cartInfo.isValidCustomer()) {
-			// Chuyá»ƒn tá»›i trang nháº­p thÃ´ng tin khÃ¡ch hÃ ng.
+			// Chuyển tới trang nhập thông tin khách hàng.
 			return "redirect:/shoppingCartCustomer";
 		}
 		
 		return "shoppingCartConfirmation";
 	}
 
-	// POST: Gá»­i Ä‘Æ¡n hÃ ng (Save).
+	// POST: Gửi đơn hàng (Save).
 	@PostMapping(value = {"/shoppingCartConfirmation"})
 	public String shoppingCartConfirmationSave(HttpServletRequest request, Model model) {
 		CartInfo cartInfo = Utils.getCartInfoInSession(request);
 
-		// ChÆ°a mua máº·t hÃ ng nÃ o.
+		// Chưa mua mặt hàng nào.
 		if (cartInfo.isEmpty()) {
-			// Chuyá»ƒn tá»›i trang danh sÃ¡ch giá»� hÃ ng
+			// Chuyển tới trang danh sách giỏ hàng
 			return "redirect:/shoppingCart";
 		} else if (!cartInfo.isValidCustomer()) {
-			// Chuyá»ƒn tá»›i trang nháº­p thÃ´ng tin khÃ¡ch hÃ ng.
+			// Chuyển tới trang nhập thông tin khách hàng.
 			return "redirect:/shoppingCartCustomer";
 		}
 
@@ -204,13 +204,13 @@ public class MainController {
 			return "shoppingCartConfirmation";
 		}
 
-		// XÃ³a giá»� hÃ ng khá»�i session.
+		// Xóa giỏ hàng khỏi session.
 		Utils.removeCartInfoInSession(request);
 
-		// LÆ°u thÃ´ng tin Ä‘Æ¡n hÃ ng Ä‘Ã£ xÃ¡c nháº­n mua.
+		// Lưu thông tin đơn hàng đã xác nhận mua.
 		Utils.storeLastOrderedCartInfoInSession(request, cartInfo);
 
-		// Chuyáº¿n hÆ°á»›ng tá»›i trang hoÃ n thÃ nh mua hÃ ng.
+		// Chuyến hướng tới trang hoàn thành mua hàng.
 		return "redirect:/shoppingCartFinalize";
 	}
 	
